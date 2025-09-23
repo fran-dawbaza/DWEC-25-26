@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas</title>
+</head>
+<body>
+    <h1 id="p1">¿De qué color es el caballo blanco de Santiago?</h1>
+    <button 
+        onclick="ponEnVerde('p1')">
+    Blanco    
+    </button>
+    <button 
+        onclick="ponEnRojo('p1')">
+    Negro    
+    </button>
+
+    <h1>La capital de Francia es Marsella</h1>
+    <button data-correcto="false">Verdadero</button>
+    <button data-correcto="true">Falso</button>
+
+    <h1>¿Una vaca puede comer con el rabo?</h1>
+    <button data-correcto="false">No, nunca</button>
+    <button data-correcto="true">Sí, si no se lo cortan</button>
+   
+    <script src="preguntas.js"></script>
+</body>
+</html>
