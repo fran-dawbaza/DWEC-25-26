@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<script>
+"use strict";
+
+const miArray = [
+  {nombre: 'manolito', edad: 16},
+  {nombre: 'ricardín', edad: 16},
+  {nombre: 'joselín', edad: 18},
+  {nombre: 'miguelón', edad: 26},
+  {nombre: 'rosita', edad: 56},
+  {nombre: 'luisita', edad: 6}, 
+  {nombre: 'lucas', edad: 96},
+  {nombre: 'mario', edad: 14}
+];
+
+function comparaNombres(a,b){
+  return a.nombre.localeCompare(b.nombre);
+}
+
+function comparaEdad(a,b){
+  return a.edad - b.edad;
+}
+
+function comparaPorEdadYPorNombre(p1,p2){
+  if (p1.edad===p2.edad){
+    return p1.nombre.localeCompare(p2.nombre);
+  }
+  return p1.edad - p2.edad;
+}
+
+miArray.sort(comparaPorEdadYPorNombre);
+
+console.log(miArray)
+</script>
