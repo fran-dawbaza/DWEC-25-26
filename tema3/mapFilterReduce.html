@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplos con map, filter y reduce</title>
+</head>
+<body>
+    <h1>Datos de partida</h1>
+    <code><pre>
+const alumnos = [
+  { nombre: "Ana", edad: 20, nota: 8.5 },
+  { nombre: "Luis", edad: 22, nota: 4.9 },
+  { nombre: "Juan", edad: 17, nota: 4.4 },
+  { nombre: "María", edad: 19, nota: 7.2 },
+  { nombre: "Carlos", edad: 24, nota: 6.1 }
+];
+    </pre></code>
+    <h1>map</h1>
+    <p>map → transformar cada elemento<br>
+- Sirve para transformar los elementos, devolviendo un nuevo array del mismo tamaño.</p>
+    <p>Ejemplo: obtener solo los nombres, crear un nuevo objeto con estado (aprobado / suspenso)</p>
+
+    <h1>filter</h1>
+    <p>filter → seleccionar algunos elementos<br>
+- Sirve para quedarnos solo con los elementos que cumplen una condición.</p>
+    <p>Ejemplo: alumnos aprobados, alumnos mayores de 18 años</p>
+
+    <h1>reduce</h1>
+    <p>reduce → acumular en un único valor<br>
+- Reduce el array a un único resultado (número, objeto, array, etc.).</p>
+    <p>Ejemplo: nota media del grupo, número de aprobados y suspensos</p>
+
+    <h1>Podemos hacer combinaciones</h1>
+    <p>Tanto map como filter retornan un nuevo array, que es suceptible de 
+        invocar de nuevo a otros métodos de los arrays
+    </p>
+    <p>Ejemplo: nombres de alumnos aprobados, nota media de los aprobados, media de edad de los suspensos</p>
+    <script src="js/mapFilterReduce.js"></script>
+</body>
+</html>
