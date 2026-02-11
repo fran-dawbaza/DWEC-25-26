@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo paginación</title>
+<style id="vd-estilos">
+            .vd-panel-top { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap; }
+            .vd-panel-bottom { 
+                display: flex; justify-content: space-between; align-items: center; 
+                margin-top: 15px; flex-wrap: wrap; gap: 10px; 
+                font-family: system-ui, -apple-system, sans-serif; font-size: 0.9em; 
+                background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #eee;
+            }
+            .vd-input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; flex-grow: 1; outline: none; transition: border 0.2s; min-width: 150px; }
+            .vd-input:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,0.1); }
+            
+            .vd-cantidad { position: relative; display: flex; align-items: center; }
+            .vd-input-num { padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 70px; text-align: center; }
+            .vd-input-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            .vd-input-num { -moz-appearance: textfield; }
+
+            .vd-select { padding: 8px 25px 8px 10px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; }
+            
+            .vd-paginacion-controls { display: flex; align-items: center; gap: 5px; }
+            .vd-btn-pag { 
+                padding: 5px 10px; border: 1px solid #ddd; background: white; 
+                cursor: pointer; border-radius: 4px; min-width: 32px; 
+                color: #555; font-weight: bold; font-size: 1.1em; line-height: 1; transition: all 0.2s;
+            }
+            .vd-btn-pag:hover:not(:disabled) { background: #e9ecef; border-color: #adb5bd; color: #333; }
+            .vd-btn-pag:disabled { color: #ccc; cursor: default; background: #fdfdfd; border-color: #eee; }
+
+            .vd-page-selector-group { display: flex; align-items: center; gap: 8px; margin: 0 10px; color: #555; }
+            .vd-page-select { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-weight: 600; color: #333; cursor: pointer; }
+
+            .vd-sin-resultados { width: 100%; text-align: center; padding: 30px; color: #777; font-style: italic; background: #fafafa; border-radius: 4px; border: 1px dashed #ddd; }
+            th.vd-ordenable { cursor: pointer; padding-right: 20px; position: relative; user-select: none; transition: background 0.1s; }
+            th.vd-ordenable:hover { background: rgba(0,0,0,0.05); }
+            th.vd-asc::after { content: '▲'; position: absolute; right: 8px; opacity: 0.7; font-size: 0.8em; }
+            th.vd-desc::after { content: '▼'; position: absolute; right: 8px; opacity: 0.7; font-size: 0.8em; }
+            
+            @media (max-width: 600px) { 
+                .vd-panel-top { flex-direction: column; align-items: stretch; }
+                .vd-panel-bottom { flex-direction: column; gap: 15px; }
+                .vd-input-num { width: 100%; }
+            }
+        </style>    
+</head>
+<body>
+    <h1>Categorías</h1>
+    <div id="capaCategorias"></div>
+    <hr>
+<table id="miTabla" data-vd-iniciado="true">
+        <thead>
+            <tr>
+                <th class="vd-ordenable">ID</th>
+                <th class="vd-ordenable">Producto</th>
+                <th class="vd-ordenable">Categoría</th>
+                <th class="vd-ordenable">Estado</th>
+                <th class="vd-ordenable">Precio</th>
+            </tr>
+        </thead>
+        <tbody><tr>
+                <td data-valor="1">1</td>
+                <td>Smartphone Gamer 871</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="799" style="text-align:right; font-weight:bold;">799&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="2">2</td>
+                <td>Auriculares Studio 457</td>
+                <td>Accesorios</td>
+                <td>Agotado</td>
+                <td data-valor="382" style="text-align:right; font-weight:bold;">382&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="3">3</td>
+                <td>Router Z 220</td>
+                <td>Electrónica</td>
+                <td>Agotado</td>
+                <td data-valor="342" style="text-align:right; font-weight:bold;">342&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="4">4</td>
+                <td>Reloj Mini 103</td>
+                <td>Gaming</td>
+                <td>Oferta</td>
+                <td data-valor="830" style="text-align:right; font-weight:bold;">830&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="5">5</td>
+                <td>Tablet Y 544</td>
+                <td>Oficina</td>
+                <td>Reacondicionado</td>
+                <td data-valor="2447" style="text-align:right; font-weight:bold;">2447&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="6">6</td>
+                <td>Teclado Pro 660</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="718" style="text-align:right; font-weight:bold;">718&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="7">7</td>
+                <td>Consola Y 204</td>
+                <td>Electrónica</td>
+                <td>En Stock</td>
+                <td data-valor="1796" style="text-align:right; font-weight:bold;">1796&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="8">8</td>
+                <td>Monitor Ultra 613</td>
+                <td>Accesorios</td>
+                <td>Oferta</td>
+                <td data-valor="1388" style="text-align:right; font-weight:bold;">1388&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="9">9</td>
+                <td>Disco Duro Ultra 790</td>
+                <td>Electrónica</td>
+                <td>Agotado</td>
+                <td data-valor="2265" style="text-align:right; font-weight:bold;">2265&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="10">10</td>
+                <td>Router Gamer 370</td>
+                <td>Accesorios</td>
+                <td>Oferta</td>
+                <td data-valor="1305" style="text-align:right; font-weight:bold;">1305&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="11">11</td>
+                <td>Impresora Básico 227</td>
+                <td>Audio</td>
+                <td>Reacondicionado</td>
+                <td data-valor="97" style="text-align:right; font-weight:bold;">97&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="12">12</td>
+                <td>Ratón Slim 481</td>
+                <td>Electrónica</td>
+                <td>En Stock</td>
+                <td data-valor="93" style="text-align:right; font-weight:bold;">93&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="13">13</td>
+                <td>Smartphone Mini 754</td>
+                <td>Accesorios</td>
+                <td>En Stock</td>
+                <td data-valor="1757" style="text-align:right; font-weight:bold;">1757&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="14">14</td>
+                <td>Reloj X 573</td>
+                <td>Electrónica</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1396" style="text-align:right; font-weight:bold;">1396&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="15">15</td>
+                <td>Micro Y 620</td>
+                <td>Electrónica</td>
+                <td>Reacondicionado</td>
+                <td data-valor="403" style="text-align:right; font-weight:bold;">403&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="16">16</td>
+                <td>Laptop Omega 611</td>
+                <td>Accesorios</td>
+                <td>Agotado</td>
+                <td data-valor="2092" style="text-align:right; font-weight:bold;">2092&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="17">17</td>
+                <td>Altavoz Gamer 634</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="398" style="text-align:right; font-weight:bold;">398&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="18">18</td>
+                <td>Reloj Ultra 411</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="139" style="text-align:right; font-weight:bold;">139&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="19">19</td>
+                <td>Auriculares Slim 509</td>
+                <td>Oficina</td>
+                <td>Agotado</td>
+                <td data-valor="791" style="text-align:right; font-weight:bold;">791&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="20">20</td>
+                <td>Laptop Y 268</td>
+                <td>Audio</td>
+                <td>Oferta</td>
+                <td data-valor="93" style="text-align:right; font-weight:bold;">93&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="21">21</td>
+                <td>Auriculares Plus 208</td>
+                <td>Electrónica</td>
+                <td>Oferta</td>
+                <td data-valor="580" style="text-align:right; font-weight:bold;">580&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="22">22</td>
+                <td>Smartphone Omega 290</td>
+                <td>Fotografía</td>
+                <td>Agotado</td>
+                <td data-valor="795" style="text-align:right; font-weight:bold;">795&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="23">23</td>
+                <td>Reloj Studio 894</td>
+                <td>Electrónica</td>
+                <td>Reacondicionado</td>
+                <td data-valor="169" style="text-align:right; font-weight:bold;">169&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="24">24</td>
+                <td>Ratón X 544</td>
+                <td>Oficina</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1465" style="text-align:right; font-weight:bold;">1465&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="25">25</td>
+                <td>Impresora Gamer 273</td>
+                <td>Accesorios</td>
+                <td>En Stock</td>
+                <td data-valor="2025" style="text-align:right; font-weight:bold;">2025&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="26">26</td>
+                <td>Reloj Gamer 126</td>
+                <td>Electrónica</td>
+                <td>En Stock</td>
+                <td data-valor="222" style="text-align:right; font-weight:bold;">222&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="27">27</td>
+                <td>Auriculares Max 486</td>
+                <td>Audio</td>
+                <td>Oferta</td>
+                <td data-valor="2368" style="text-align:right; font-weight:bold;">2368&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="28">28</td>
+                <td>Impresora Studio 189</td>
+                <td>Oficina</td>
+                <td>En Stock</td>
+                <td data-valor="930" style="text-align:right; font-weight:bold;">930&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="29">29</td>
+                <td>Reloj Ultra 377</td>
+                <td>Audio</td>
+                <td>Oferta</td>
+                <td data-valor="2221" style="text-align:right; font-weight:bold;">2221&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="30">30</td>
+                <td>Disco Duro Z 310</td>
+                <td>Accesorios</td>
+                <td>En Stock</td>
+                <td data-valor="218" style="text-align:right; font-weight:bold;">218&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="31">31</td>
+                <td>Altavoz Slim 192</td>
+                <td>Gaming</td>
+                <td>En Stock</td>
+                <td data-valor="629" style="text-align:right; font-weight:bold;">629&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="32">32</td>
+                <td>Ratón Slim 696</td>
+                <td>Electrónica</td>
+                <td>Oferta</td>
+                <td data-valor="1883" style="text-align:right; font-weight:bold;">1883&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="33">33</td>
+                <td>Reloj Slim 156</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1401" style="text-align:right; font-weight:bold;">1401&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="34">34</td>
+                <td>Impresora X 209</td>
+                <td>Gaming</td>
+                <td>Agotado</td>
+                <td data-valor="2363" style="text-align:right; font-weight:bold;">2363&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="35">35</td>
+                <td>Auriculares Air 606</td>
+                <td>Electrónica</td>
+                <td>Oferta</td>
+                <td data-valor="546" style="text-align:right; font-weight:bold;">546&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="36">36</td>
+                <td>Tablet Max 362</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="849" style="text-align:right; font-weight:bold;">849&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="37">37</td>
+                <td>Smartphone Z 339</td>
+                <td>Gaming</td>
+                <td>Oferta</td>
+                <td data-valor="1862" style="text-align:right; font-weight:bold;">1862&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="38">38</td>
+                <td>Smartphone Pro 560</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="416" style="text-align:right; font-weight:bold;">416&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="39">39</td>
+                <td>Altavoz Ultra 199</td>
+                <td>Accesorios</td>
+                <td>En Stock</td>
+                <td data-valor="2318" style="text-align:right; font-weight:bold;">2318&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="40">40</td>
+                <td>Teclado Max 742</td>
+                <td>Audio</td>
+                <td>Oferta</td>
+                <td data-valor="1374" style="text-align:right; font-weight:bold;">1374&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="41">41</td>
+                <td>Micro Alpha 818</td>
+                <td>Gaming</td>
+                <td>Oferta</td>
+                <td data-valor="708" style="text-align:right; font-weight:bold;">708&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="42">42</td>
+                <td>Altavoz Pro 246</td>
+                <td>Gaming</td>
+                <td>Agotado</td>
+                <td data-valor="1943" style="text-align:right; font-weight:bold;">1943&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="43">43</td>
+                <td>Ratón Omega 318</td>
+                <td>Electrónica</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1932" style="text-align:right; font-weight:bold;">1932&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="44">44</td>
+                <td>Teclado Básico 413</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1704" style="text-align:right; font-weight:bold;">1704&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="45">45</td>
+                <td>Cámara Y 852</td>
+                <td>Fotografía</td>
+                <td>Agotado</td>
+                <td data-valor="1863" style="text-align:right; font-weight:bold;">1863&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="46">46</td>
+                <td>Impresora Z 267</td>
+                <td>Oficina</td>
+                <td>En Stock</td>
+                <td data-valor="1072" style="text-align:right; font-weight:bold;">1072&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="47">47</td>
+                <td>Altavoz Slim 321</td>
+                <td>Gaming</td>
+                <td>Reacondicionado</td>
+                <td data-valor="47" style="text-align:right; font-weight:bold;">47&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="48">48</td>
+                <td>Teclado Slim 408</td>
+                <td>Audio</td>
+                <td>En Stock</td>
+                <td data-valor="1762" style="text-align:right; font-weight:bold;">1762&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="49">49</td>
+                <td>Reloj Gamer 764</td>
+                <td>Accesorios</td>
+                <td>Agotado</td>
+                <td data-valor="2223" style="text-align:right; font-weight:bold;">2223&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="50">50</td>
+                <td>Reloj Studio 119</td>
+                <td>Audio</td>
+                <td>Reacondicionado</td>
+                <td data-valor="2398" style="text-align:right; font-weight:bold;">2398&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="51">51</td>
+                <td>Monitor Alpha 516</td>
+                <td>Audio</td>
+                <td>Agotado</td>
+                <td data-valor="510" style="text-align:right; font-weight:bold;">510&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="52">52</td>
+                <td>Teclado Slim 748</td>
+                <td>Oficina</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1456" style="text-align:right; font-weight:bold;">1456&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="53">53</td>
+                <td>Micro Z 707</td>
+                <td>Gaming</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1927" style="text-align:right; font-weight:bold;">1927&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="54">54</td>
+                <td>Teclado X 263</td>
+                <td>Electrónica</td>
+                <td>En Stock</td>
+                <td data-valor="947" style="text-align:right; font-weight:bold;">947&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="55">55</td>
+                <td>Consola Max 489</td>
+                <td>Oficina</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1573" style="text-align:right; font-weight:bold;">1573&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="56">56</td>
+                <td>Micro Omega 314</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1065" style="text-align:right; font-weight:bold;">1065&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="57">57</td>
+                <td>Monitor X 440</td>
+                <td>Audio</td>
+                <td>En Stock</td>
+                <td data-valor="199" style="text-align:right; font-weight:bold;">199&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="58">58</td>
+                <td>Cámara Slim 431</td>
+                <td>Audio</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1533" style="text-align:right; font-weight:bold;">1533&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="59">59</td>
+                <td>Ratón Omega 790</td>
+                <td>Accesorios</td>
+                <td>Oferta</td>
+                <td data-valor="978" style="text-align:right; font-weight:bold;">978&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="60">60</td>
+                <td>Smartphone Básico 610</td>
+                <td>Audio</td>
+                <td>En Stock</td>
+                <td data-valor="441" style="text-align:right; font-weight:bold;">441&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="61">61</td>
+                <td>Altavoz Ultra 277</td>
+                <td>Oficina</td>
+                <td>Oferta</td>
+                <td data-valor="886" style="text-align:right; font-weight:bold;">886&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="62">62</td>
+                <td>Auriculares Ultra 732</td>
+                <td>Oficina</td>
+                <td>En Stock</td>
+                <td data-valor="1146" style="text-align:right; font-weight:bold;">1146&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="63">63</td>
+                <td>Reloj Gamer 649</td>
+                <td>Accesorios</td>
+                <td>Oferta</td>
+                <td data-valor="2433" style="text-align:right; font-weight:bold;">2433&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="64">64</td>
+                <td>Monitor X 630</td>
+                <td>Oficina</td>
+                <td>Agotado</td>
+                <td data-valor="1081" style="text-align:right; font-weight:bold;">1081&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="65">65</td>
+                <td>Tablet Omega 764</td>
+                <td>Electrónica</td>
+                <td>Reacondicionado</td>
+                <td data-valor="2469" style="text-align:right; font-weight:bold;">2469&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="66">66</td>
+                <td>Auriculares Air 668</td>
+                <td>Audio</td>
+                <td>Agotado</td>
+                <td data-valor="1176" style="text-align:right; font-weight:bold;">1176&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="67">67</td>
+                <td>Router Air 445</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1912" style="text-align:right; font-weight:bold;">1912&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="68">68</td>
+                <td>Altavoz Max 439</td>
+                <td>Oficina</td>
+                <td>Agotado</td>
+                <td data-valor="1357" style="text-align:right; font-weight:bold;">1357&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="69">69</td>
+                <td>Impresora Studio 423</td>
+                <td>Audio</td>
+                <td>Agotado</td>
+                <td data-valor="1351" style="text-align:right; font-weight:bold;">1351&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="70">70</td>
+                <td>Disco Duro Mini 652</td>
+                <td>Oficina</td>
+                <td>Agotado</td>
+                <td data-valor="1232" style="text-align:right; font-weight:bold;">1232&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="71">71</td>
+                <td>Reloj Pro 516</td>
+                <td>Oficina</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1141" style="text-align:right; font-weight:bold;">1141&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="72">72</td>
+                <td>Smartphone Z 249</td>
+                <td>Electrónica</td>
+                <td>Agotado</td>
+                <td data-valor="1446" style="text-align:right; font-weight:bold;">1446&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="73">73</td>
+                <td>Smartphone Studio 723</td>
+                <td>Accesorios</td>
+                <td>Oferta</td>
+                <td data-valor="238" style="text-align:right; font-weight:bold;">238&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="74">74</td>
+                <td>Consola Slim 822</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="1417" style="text-align:right; font-weight:bold;">1417&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="75">75</td>
+                <td>Impresora Max 600</td>
+                <td>Audio</td>
+                <td>Oferta</td>
+                <td data-valor="203" style="text-align:right; font-weight:bold;">203&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="76">76</td>
+                <td>Impresora Ultra 341</td>
+                <td>Gaming</td>
+                <td>En Stock</td>
+                <td data-valor="892" style="text-align:right; font-weight:bold;">892&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="77">77</td>
+                <td>Impresora Pro 882</td>
+                <td>Audio</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1024" style="text-align:right; font-weight:bold;">1024&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="78">78</td>
+                <td>Ratón Y 298</td>
+                <td>Gaming</td>
+                <td>Oferta</td>
+                <td data-valor="1648" style="text-align:right; font-weight:bold;">1648&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="79">79</td>
+                <td>Impresora Plus 359</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="1507" style="text-align:right; font-weight:bold;">1507&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="80">80</td>
+                <td>Disco Duro Gamer 633</td>
+                <td>Audio</td>
+                <td>En Stock</td>
+                <td data-valor="139" style="text-align:right; font-weight:bold;">139&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="81">81</td>
+                <td>Teclado Alpha 607</td>
+                <td>Oficina</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1370" style="text-align:right; font-weight:bold;">1370&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="82">82</td>
+                <td>Disco Duro Pro 880</td>
+                <td>Fotografía</td>
+                <td>Oferta</td>
+                <td data-valor="2340" style="text-align:right; font-weight:bold;">2340&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="83">83</td>
+                <td>Router X 612</td>
+                <td>Accesorios</td>
+                <td>Reacondicionado</td>
+                <td data-valor="501" style="text-align:right; font-weight:bold;">501&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="84">84</td>
+                <td>Disco Duro Plus 303</td>
+                <td>Electrónica</td>
+                <td>Oferta</td>
+                <td data-valor="1769" style="text-align:right; font-weight:bold;">1769&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="85">85</td>
+                <td>Monitor Mini 707</td>
+                <td>Fotografía</td>
+                <td>Agotado</td>
+                <td data-valor="1086" style="text-align:right; font-weight:bold;">1086&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="86">86</td>
+                <td>Teclado Plus 134</td>
+                <td>Fotografía</td>
+                <td>En Stock</td>
+                <td data-valor="2480" style="text-align:right; font-weight:bold;">2480&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="87">87</td>
+                <td>Consola Studio 674</td>
+                <td>Audio</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1568" style="text-align:right; font-weight:bold;">1568&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="88">88</td>
+                <td>Ratón Max 838</td>
+                <td>Electrónica</td>
+                <td>Agotado</td>
+                <td data-valor="1485" style="text-align:right; font-weight:bold;">1485&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="89">89</td>
+                <td>Ratón Mini 673</td>
+                <td>Gaming</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1478" style="text-align:right; font-weight:bold;">1478&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="90">90</td>
+                <td>Ratón Z 265</td>
+                <td>Electrónica</td>
+                <td>Agotado</td>
+                <td data-valor="1325" style="text-align:right; font-weight:bold;">1325&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="91">91</td>
+                <td>Router Omega 865</td>
+                <td>Accesorios</td>
+                <td>En Stock</td>
+                <td data-valor="2359" style="text-align:right; font-weight:bold;">2359&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="92">92</td>
+                <td>Cámara Pro 241</td>
+                <td>Oficina</td>
+                <td>Oferta</td>
+                <td data-valor="491" style="text-align:right; font-weight:bold;">491&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="93">93</td>
+                <td>Impresora Mini 323</td>
+                <td>Audio</td>
+                <td>En Stock</td>
+                <td data-valor="1309" style="text-align:right; font-weight:bold;">1309&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="94">94</td>
+                <td>Router Ultra 598</td>
+                <td>Electrónica</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1923" style="text-align:right; font-weight:bold;">1923&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="95">95</td>
+                <td>Smartphone Max 212</td>
+                <td>Electrónica</td>
+                <td>En Stock</td>
+                <td data-valor="1234" style="text-align:right; font-weight:bold;">1234&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="96">96</td>
+                <td>Monitor Plus 505</td>
+                <td>Oficina</td>
+                <td>Agotado</td>
+                <td data-valor="505" style="text-align:right; font-weight:bold;">505&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="97">97</td>
+                <td>Router Alpha 102</td>
+                <td>Electrónica</td>
+                <td>Agotado</td>
+                <td data-valor="2021" style="text-align:right; font-weight:bold;">2021&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="98">98</td>
+                <td>Cámara Plus 243</td>
+                <td>Electrónica</td>
+                <td>Oferta</td>
+                <td data-valor="176" style="text-align:right; font-weight:bold;">176&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="99">99</td>
+                <td>Cámara Gamer 633</td>
+                <td>Audio</td>
+                <td>Reacondicionado</td>
+                <td data-valor="1062" style="text-align:right; font-weight:bold;">1062&nbsp;€</td>
+            </tr><tr>
+                <td data-valor="100">100</td>
+                <td>Reloj Max 173</td>
+                <td>Gaming</td>
+                <td>Agotado</td>
+                <td data-valor="1132" style="text-align:right; font-weight:bold;">1132&nbsp;€</td>
+            </tr></tbody>
+    </table>
+    <div>
+        
+    </div>
+</body><script src="js/paginacion.js"></script>
+</html>
